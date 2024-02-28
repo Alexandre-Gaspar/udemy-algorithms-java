@@ -41,15 +41,26 @@ public class Reservation {
         return durationInDays;
     }
 
-    public void UpdateDates(LocalDate checkin, LocalDate checkout) {
+    public String UpdateDates(LocalDate checkin, LocalDate checkout) {
+        
+        LocalDate dateOfToday = LocalDate.now(); // Get the current date
+        if (checkin.isBefore(dateOfToday) || checkout.isBefore(dateOfToday)) {
+            return "Reservation dates for update must be future dates";
+        }
+        if (!checkout.isAfter(checkin)) {
+            return "Check-out date must be after check-in date";
+        }
+        
         this.checkin = checkin;
         this.checkout = checkout;
+
+        return null;
     }
 
     @Override
     public String toString() {
         return "Room "
-            + roomNumber
+            + this.roomNumber
             + ", check-in: "
             + checkin.format(format)
             + ", check-out: "
