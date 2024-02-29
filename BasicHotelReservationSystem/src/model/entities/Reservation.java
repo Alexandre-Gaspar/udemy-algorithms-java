@@ -4,10 +4,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
+import model.exceptions.DomainExeption;
+
 public class Reservation {
     
     public static DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     
+    LocalDate dateOfToday = LocalDate.now(); // Get the current date
     private Integer roomNumber;
     private LocalDate checkin;
     private LocalDate checkout;
@@ -15,6 +18,12 @@ public class Reservation {
     public Reservation() {} // Empty construtor ...
 
     public Reservation(Integer roomNumber, LocalDate checkin, LocalDate checkout) {
+        if (checkin.isBefore(dateOfToday) || checkout.isBefore(dateOfToday)) {
+            throw new DomainExeption("Reservation dates for update must be future dates");
+        }
+        if (!checkout.isAfter(checkin)) {
+            throw new DomainExeption("Check-out date must be after check-in date");
+        }
         this.roomNumber = roomNumber;
         this.checkin = checkin;
         this.checkout = checkout;
@@ -43,12 +52,11 @@ public class Reservation {
 
     public String UpdateDates(LocalDate checkin, LocalDate checkout) {
         
-        LocalDate dateOfToday = LocalDate.now(); // Get the current date
         if (checkin.isBefore(dateOfToday) || checkout.isBefore(dateOfToday)) {
-            return "Reservation dates for update must be future dates";
+            throw new DomainExeption("Reservation dates for update must be future dates");
         }
         if (!checkout.isAfter(checkin)) {
-            return "Check-out date must be after check-in date";
+            throw new DomainExeption("Check-out date must be after check-in date");
         }
         
         this.checkin = checkin;
